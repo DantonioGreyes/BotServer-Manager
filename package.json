@@ -1,0 +1,35 @@
+{
+  "name": "testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasp402/testing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jasp402/testing/issues"
+  },
+  "homepage": "https://github.com/jasp402/testing#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "mongoose": "^5.0.16"
+  },
+  "devDependencies": {
+    "body-parser": "^1.18.2",
+    "http": "0.0.0",
+    "nodemon": "^1.0.20",
+    "request": "^2.85.0",
+    "socket.io": "^2.1.0",
+    "sync-request": "^6.0.0"
+  }
+}
