@@ -9,7 +9,7 @@
  * Created      18/05/2018 11:33 AM
  * Author       Jesus Perez jasp402@gmail.com
  * Copyright    Codisoti – www.codisoti.pe
- * Version      1.0.0
+ * Version      2.0.0
  *
  * for more info. Review ./package.json
  *
@@ -31,13 +31,16 @@ let
 database.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 wss.on('connection', function (ws, req) {
-    let dataConnection  = util.getDataToConnection(req);
+    let dataConnection = util.getDataToConnection(req);
     util.logConnection(dataConnection);
     ws.send('ServerBot - Manager | CONNECTED! - ' + dataConnection.id_connection);
 
 
     ws.on('message', function (messages) {
         util.log(messages);
+        let parameters = util.webSocketCommands(messages);
+        util.log(JSON.stringify(parameters));
+        ws.send(JSON.stringify(parameters));
     });
 
     ws.on('close', function close() {
@@ -58,6 +61,7 @@ app.use(function (req, res, next) {
 
     next();
 });
+
 app.use('/api', router);
 app.listen(c.PORT_SERVER);
 console.log(c.APP_NAME,
@@ -159,5 +163,29 @@ router.get('/', function (req, res) {
     res.json({message: 'hooray! welcome to our api!'});
 });
 
+/*
+app.get('/home',(req,res)=>{
+    !util.validateLogin(req.headers.cookie) &&  res.sendFile(__dirname+'/public/index.html');
+    let user = util.getUserWithGithub(req.query.code ||req.headers.cookie.split(';')[0].split('=')[1]);
+    if(Object.keys(user).length > 0){
+        res.sendFile(__dirname+'/public/dashboard.html');
+        res.cookie('code',user.code, { maxAge: 900000, httpOnly: true })
+    }
+});
+*/
 
-
+app.get('/home', (req, res) => {
+    (!req.query.code && !req.headers.cookie) && res.redirect('/');
+    if(req.headers.cookie){
+        console.log('token:',req.headers.cookie.split(';')[0].split('=')[1]);
+        res.sendFile(__dirname + '/public/dashboard.html');
+    }else{
+        let code = req.query.code;
+        console.log('code:', code);
+        let user = util.getUserWithGithub(code);
+        if (Object.keys(user).length > 0) {
+            res.sendFile(__dirname + '/public/dashboard.html');
+            res.cookie('token', user.token, {maxAge: 900000, httpOnly: true})
+        }
+    }
+});

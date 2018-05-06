@@ -4,6 +4,7 @@ const
     main = require('./class.main.server');
 
 let globalLog = {};
+let code;
 
 class Utils extends main {
     getDataToConnection(request) {
@@ -79,6 +80,26 @@ class Utils extends main {
             }
         });
         return optReturn ? new Date(result + " 12:00:00") : result;
+    }
+
+    getUserWithGithub(token){
+        let object = {
+            client_id : c.GITHUB_CLIENT_ID,
+            client_secret: c.GITHUB_CLIENT_SECRET,
+            code: token,
+            format:'json'
+        };
+        let urlGetToken = c.GITHUB_URL_ACCESS+'?'+Object.keys(object).map(k => `${k}` + '=' + encodeURIComponent(object[k])).join('&');
+        let tokenAccess = super.serverRequestSync('GET',urlGetToken,'');
+        let urlGetUser = c.GITHUB_URL_USER+'?access_token='+tokenAccess.access_token;
+        let user = super.serverRequestSync('GET',urlGetUser,'');
+        user['code'] = code;
+        user['token'] = tokenAccess.access_token;
+        code = token;
+        return user;
+    }
+    validateLogin(cookies){
+        return !!cookies  ? cookies.split(';')[0].split('=')[1] === code : false;
     }
 }
 

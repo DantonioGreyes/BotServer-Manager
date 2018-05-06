@@ -1,3 +1,25 @@
+
+// Create WebSocket connection.
+const socket = new WebSocket('ws://localhost:40210');
+
+//Connection status
+console.log('status', socket.readyState);
+
+// Connection opened
+socket.addEventListener('open', function (event) {
+    console.log('Message from server ', event.data);
+
+    //socket.send('_MedicTouch');
+});
+
+// Listen for messages
+socket.addEventListener('message', function (event) {
+    $("#bodyResponse").val(event.data);
+    console.log('Message from server ', event.data);
+
+
+});
+
 let parameters = "{\n" +
     "  \"login\": \"PRM7100\",\n" +
     "  \"password\": \"L@nd1326\",\n" +

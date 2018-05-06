@@ -5,17 +5,24 @@
     <title>Prueba</title>
     <!-- styles CSS -->
     <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- JavaScript & Lib -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
     <script src="script.js"></script>
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"
+            integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"
+            crossorigin="anonymous"></script>
 
 </head>
 
@@ -24,11 +31,38 @@
 <div class="container">
     <div class="py-5 text-center">
         <!--<img class="d-block mx-auto mb-4" src="http://fuse-angular-material.withinpixels.com/assets/images/logos/fuse.svg" alt="" width="72" height="72">-->
-        <h2>API - TESTeR</h2>
-        <p class="lead">Bot Tester - Server NodeJS V.1.0.0<br><a href="" id="urlText">http://localhost:8080/</a></p>
+        <h2>Dashboard - TESTeR</h2>
+        <p class="lead">BotServer - Manager V.2.0.0<br><a href="" id="urlText">http://localhost:8080/</a></p>
     </div>
     <div class="row">
         <div class="col-md-4 order-md-1 mb-4">
+            <div class="card p-2">
+                <img class="card-img-top"
+                     src="https://www.lacartedescolocs.fr/assets/fallbacks/profile_woman_medium_fallback-a7f0361efd57b6d193bef198dacdaaf2a0ac1aa17f23cd9613540c05f2c6bac6.png">
+                <div class="card-block">
+                    <h4 class="card-title mt-3">Zahir patel</h4>
+                    <div class="meta">
+                        <h5>India, 22 ans</h5>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="icon pull-right">
+                        <a href="#"><i class="fa fa-envelope fa-fw fa-2x" aria-hidden="true"></i></a>
+                        <a href="#"><i class="fa fa-ban fa-2x" aria-hidden="true"></i></a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="p-2"></div>
+            <form class="card p-2">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search Method...">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-secondary">GO</button>
+                    </div>
+                </div>
+            </form>
+            <div class="p-2"></div>
             <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-muted">Service methods</span>
                 <span class="badge badge-secondary badge-pill">3</span>
@@ -56,14 +90,6 @@
                     <span class="text-muted method-2">GET</span>
                 </li>
             </ul>
-            <form class="card p-2">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search Method...">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-secondary">GO</button>
-                    </div>
-                </div>
-            </form>
         </div>
         <div class="col-md-8 order-md-2">
             <h4 class="mb-3">Build Query</h4>
@@ -72,7 +98,8 @@
                     <div class="col-md-4 mb-3">
                         <label>Url-Base | </label>
                         <small class="text-muted">Set o change url base</small>
-                        <input type="text" class="form-control" id="urlbase" placeholder="http://" value="http://localhost:8080/api">
+                        <input type="text" class="form-control" id="urlbase" placeholder="http://"
+                               value="http://localhost:8080/api/">
                         <div class="invalid-feedback">
                             Valid first name is required.
                         </div>
@@ -80,7 +107,8 @@
                     <div class="col-md-2 mb-3">
                         <label>Method</label>
                         <small class="text-muted"></small>
-                        <input type="text" class="form-control" id="method" readonly placeholder="GET" value="" required>
+                        <input type="text" class="form-control" id="method" readonly placeholder="GET" value=""
+                               required>
                         <div class="invalid-feedback">
                             Valid first name is required.
                         </div>
@@ -88,7 +116,7 @@
                     <div class="col-md-6 mb-3">
                         <label>Url-Final | </label>
                         <small class="text-muted">Base Url include entity</small>
-                        <input type="text" class="form-control" id="uri"  placeholder="http://" value="" required>
+                        <input type="text" class="form-control" id="uri" placeholder="http://" value="" required>
                         <div class="invalid-feedback">
                             Valid first name is required.
                         </div>
@@ -98,7 +126,9 @@
                     <div class="col-md-4 mb-3">
                         <label>Query | </label>
                         <small class="text-muted">Method send data</small>
-                        <input id="connect" type="checkbox" checked data-toggle="toggle" data-on="<i class='fab fa-js-square'></i> Ajax" data-off="<i class='fab fa-php'></i> Curl" data-width="100%">
+                        <input id="connect" type="checkbox" checked data-toggle="toggle"
+                               data-on="<i class='fab fa-js-square'></i> Ajax"
+                               data-off="<i class='fab fa-php'></i> Curl" data-width="100%">
                         <div class="invalid-feedback">
                             Valid first name is required.
                         </div>
@@ -111,7 +141,7 @@
                 <div class="row">
                     <div class="col-md-12 mb-3">
                         <label>Parameters</label>
-                        <textarea class="form-control" id="parameters"  rows="10"></textarea>
+                        <textarea class="form-control" id="parameters" rows="10"></textarea>
                         <small class="text-muted">Set of data for query to bot</small>
                         <div class="invalid-feedback">
                             Name on card is required
@@ -155,7 +185,9 @@
 
 
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block invisible" id="btn" type="button" onclick="sendRequest()">Test Query</button>
+                <button class="btn btn-primary btn-lg btn-block invisible" id="btn" type="button"
+                        onclick="sendRequest()">Test Query
+                </button>
             </form>
         </div>
     </div>
