@@ -101,8 +101,18 @@ class Utils extends main {
         fs.writeFileSync(__dirname+'/../.tmp/'+user.token+'.json', JSON.stringify(user)); //ToDo - Crear constante
         return user;
     }
-    validateLogin(cookies){
-        return !!cookies  ? cookies.split(';')[0].split('=')[1] === code : false;
+
+    getCookiesToken(cookies){
+        let token = cookies
+            .split(';')
+            .filter(x=>{
+                return x.split('=')[0].trim() === 'token' ? x : void 0});
+
+        return token.length !== 0 ? token[0].split('=')[1] : false;
+    }
+
+    executeCommands(object){
+        
     }
 }
 

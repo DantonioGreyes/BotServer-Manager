@@ -46,6 +46,10 @@ wss.on('connection', function (ws, req) {
     ws.on('close', function close() {
         console.log('disconnected');
     });
+
+    ws.on('error', function close() {
+        console.log('disconnected by Error!');
+    })
 });
 
 
@@ -96,7 +100,6 @@ router.route('/create/:models')
             console.error('ERROR: ', e);
             res.send('ERROR: ' + e);
         }
-
     });
 
 router.route('/read/:models')
@@ -175,13 +178,17 @@ app.get('/home',(req,res)=>{
 */
 
 app.get('/home', (req, res) => {
-    (!req.query.code && !req.headers.cookie) && res.redirect('/');
-    if(req.headers.cookie){
-        console.log('token:',req.headers.cookie.split(';')[0].split('=')[1]);
+    let resultToken = util.getCookiesToken(req.headers.cookie);
+
+
+    if(resultToken){
         res.sendFile(__dirname + '/public/dashboard.html');
-    }else{
+    }
+
+    (!req.query.code && !resultToken) && res.redirect('/');
+
+    if(!resultToken && req.query.code){
         let code = req.query.code;
-        console.log('code:', code);
         let user = util.getUserWithGithub(code);
         if (Object.keys(user).length > 0) {
             res.sendFile(__dirname + '/public/dashboard.html');
@@ -191,10 +198,8 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/.tmp', (req, res) => {
-    let token = req.headers.cookie.split(';')[0].split('=')[1];
-    console.log('.tmp > Token2: ',token);
+    let token = util.getCookiesToken(req.headers.cookie);
     let response = fs.readFileSync('.tmp/'+token+'.json', 'utf8');
-    console.log('file:',response);
     res.send(response)
 
 

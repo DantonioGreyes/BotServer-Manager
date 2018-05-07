@@ -1,26 +1,24 @@
+if (window.location.href !== 'http://localhost:8080/') {
+    console.log('ENTRA AQUI--->');
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:8080/.tmp',
+        before: function () {
+        },
+        success: function (response) {
+            let data = JSON.parse(response);
+            //console.log('response:', data.avatar_url);
+            //console.log(response);
+            $("#bodyResponse").val(data);
+            $('img.card-img-top').attr('src', data.avatar_url);
 
-$.ajax({
-    type: 'GET',
-    url: 'http://localhost:8080/.tmp',
-    before: function () {
-    },
-    success: function (response) {
-        let data = JSON.parse(response);
-        console.log('response:',data.avatar_url);
-        console.log(response);
-        $("#bodyResponse").val(data);
-        $('img.card-img-top').attr('src', data.avatar_url);
-
-        $('#userName').text(data.login);
-    },
-    complete: function (errors) {
-        console.log("completed");
-    }
-});
-
-console.log(document.cookie);
-
-
+            $('#userName').text(data.login);
+        },
+        complete: function (errors) {
+            console.log("completed");
+        }
+    });
+}
 
 // Create WebSocket connection.
 const socket = new WebSocket('ws://localhost:40210');
@@ -30,17 +28,16 @@ console.log('status', socket.readyState);
 
 // Connection opened
 socket.addEventListener('open', function (event) {
-    console.log('Message from server ', event.data);
-    socket.send('_getToken');
+    $('.meta h5').html('CONNECTED');
 });
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
+    $("#bodyResponse").val(event.data);
+});
 
-    //$("#bodyResponse").val(event.data);
-    console.log('Message from server ', event.data);
-
-
+$('#send').on("click", function () {
+    socket.send($('#commands').val());
 });
 
 let parameters = "{\n" +
@@ -61,7 +58,7 @@ let parameters = "{\n" +
     "  ]\n" +
     "}";
 
-    $(document).ready(function () {
+$(document).ready(function () {
 
     $("#urlbase").keyup(function () {
         let value = $(this).val();
@@ -71,7 +68,7 @@ let parameters = "{\n" +
 
     $("#1").on("click", function () {
         $("#method").val($(".method-1").text());
-        $("#uri").val($("#urlbase").val()+$("#1").text());
+        $("#uri").val($("#urlbase").val() + $("#1").text());
         $("#parameters").val(parameters);
         $("#btn").removeClass("invisible")
     });
@@ -79,7 +76,7 @@ let parameters = "{\n" +
 $(document).ready(function () {
     $("#2").on("click", function () {
         $("#method").val($(".method-2").text());
-        $("#uri").val(baseUrl+$("#2").text());
+        $("#uri").val(baseUrl + $("#2").text());
         $("#parameters").val(JSON.stringify(parameters));
         $("#btn").removeClass("invisible")
     });
@@ -88,15 +85,15 @@ $(document).ready(function () {
 function sendRequest() {
     let url = $("#uri").val();
     let method = $("#method").val();
-    let param =  JSON.parse($("#parameters").val());
+    let param = JSON.parse($("#parameters").val());
     if (confirm("Seguro que deseas enviar?") == true) {
 
-        let _url =  ($('#connect').is(':checked')?url:'curl.php');
+        let _url = ($('#connect').is(':checked') ? url : 'curl.php');
 
         $.ajax({
             type: method,
             url: _url,
-            data:param,
+            data: param,
             before: function () {
             },
             success: function (response) {

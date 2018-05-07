@@ -40,9 +40,9 @@
                 <img class="card-img-top"
                      src="https://www.lacartedescolocs.fr/assets/fallbacks/profile_woman_medium_fallback-a7f0361efd57b6d193bef198dacdaaf2a0ac1aa17f23cd9613540c05f2c6bac6.png">
                 <div class="card-block">
-                    <h4 class="card-title mt-3" id="userName">Zahir patel</h4>
+                    <h4 class="card-title mt-3" id="userName">UserName</h4>
                     <div class="meta">
-                        <h5>India, 22 ans</h5>
+                        <h5>DISCONNECTED</h5>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -136,12 +136,17 @@
                 </div>
                 <hr class="mb-4">
 
-                <h4 class="mb-3">Body Request</h4>
+                <h4 class="mb-3">Commands Line</h4>
 
                 <div class="row">
                     <div class="col-md-12 mb-3">
-                        <label>Parameters</label>
-                        <textarea class="form-control" id="parameters" rows="10"></textarea>
+                        <label>Use command line for execute bots from server via WebSocket</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="commands">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-secondary" id="send">SEND</button>
+                            </div>
+                        </div>
                         <small class="text-muted">Set of data for query to bot</small>
                         <div class="invalid-feedback">
                             Name on card is required

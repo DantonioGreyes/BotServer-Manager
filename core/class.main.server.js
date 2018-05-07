@@ -80,7 +80,7 @@ class Main {
             body: body
         });
         return JSON.parse(responseServer.getBody('utf8'));
-        }
+    }
 }
 
 module.exports = Main;
