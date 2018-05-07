@@ -178,7 +178,7 @@ app.get('/home',(req,res)=>{
 */
 
 app.get('/home', (req, res) => {
-    let resultToken = util.getCookiesToken(req.headers.cookie);
+    let resultToken = req.headers.cookie ? util.getCookiesToken(req.headers.cookie) : false;
 
 
     if(resultToken){
@@ -198,9 +198,7 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/.tmp', (req, res) => {
-    let token = util.getCookiesToken(req.headers.cookie);
+    let token = req.headers.cookie ? util.getCookiesToken(req.headers.cookie) : res.redirect('/');
     let response = fs.readFileSync('.tmp/'+token+'.json', 'utf8');
     res.send(response)
-
-
 });
