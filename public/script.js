@@ -1,4 +1,27 @@
 
+$.ajax({
+    type: 'GET',
+    url: 'http://localhost:8080/.tmp',
+    before: function () {
+    },
+    success: function (response) {
+        let data = JSON.parse(response);
+        console.log('response:',data.avatar_url);
+        console.log(response);
+        $("#bodyResponse").val(data);
+        $('img.card-img-top').attr('src', data.avatar_url);
+
+        $('#userName').text(data.login);
+    },
+    complete: function (errors) {
+        console.log("completed");
+    }
+});
+
+console.log(document.cookie);
+
+
+
 // Create WebSocket connection.
 const socket = new WebSocket('ws://localhost:40210');
 
@@ -8,13 +31,13 @@ console.log('status', socket.readyState);
 // Connection opened
 socket.addEventListener('open', function (event) {
     console.log('Message from server ', event.data);
-
-    //socket.send('_MedicTouch');
+    socket.send('_getToken');
 });
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    $("#bodyResponse").val(event.data);
+
+    //$("#bodyResponse").val(event.data);
     console.log('Message from server ', event.data);
 
 

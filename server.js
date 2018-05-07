@@ -20,6 +20,7 @@ const
     express = require('express'),
     utils = require('./core/class.utils.server'),
     Ws = require('ws').Server,
+    fs = require('fs'),
     c = require('./core/constants.server');
 
 let
@@ -34,7 +35,6 @@ wss.on('connection', function (ws, req) {
     let dataConnection = util.getDataToConnection(req);
     util.logConnection(dataConnection);
     ws.send('ServerBot - Manager | CONNECTED! - ' + dataConnection.id_connection);
-
 
     ws.on('message', function (messages) {
         util.log(messages);
@@ -188,4 +188,14 @@ app.get('/home', (req, res) => {
             res.cookie('token', user.token, {maxAge: 900000, httpOnly: true})
         }
     }
+});
+
+app.get('/.tmp', (req, res) => {
+    let token = req.headers.cookie.split(';')[0].split('=')[1];
+    console.log('.tmp > Token2: ',token);
+    let response = fs.readFileSync('.tmp/'+token+'.json', 'utf8');
+    console.log('file:',response);
+    res.send(response)
+
+
 });

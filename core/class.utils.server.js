@@ -5,6 +5,7 @@ const
 
 let globalLog = {};
 let code;
+let userData;
 
 class Utils extends main {
     getDataToConnection(request) {
@@ -96,6 +97,8 @@ class Utils extends main {
         user['code'] = code;
         user['token'] = tokenAccess.access_token;
         code = token;
+        userData = user;
+        fs.writeFileSync(__dirname+'/../.tmp/'+user.token+'.json', JSON.stringify(user)); //ToDo - Crear constante
         return user;
     }
     validateLogin(cookies){
