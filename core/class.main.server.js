@@ -1,8 +1,14 @@
 const request = require('request');
 const requestSync = require('sync-request');
 const c = require('./constants.server');
+Launcher = require('webdriverio').Launcher;
 
 class Main {
+
+    executeBots(path, opt){
+    return new Launcher(path, opt).run();
+}
+
     _dbCreate(collection, data) {
         //method : post
         //url : http://localhost:3000/create/:collection/
@@ -20,7 +26,6 @@ class Main {
         } catch (e) {
             console.log('request POST error:', e);
         }
-
     };
 
     _dbReadSync(collection, data) {
@@ -33,44 +38,10 @@ class Main {
             body: Object.keys(data).map(k => `${k}` + '=' + encodeURIComponent(data[k])).join('&')
         };
         //console.log(content);
-        return JSON.parse(requestSync('POST', url, content).getBody());
-    };
+        console.log('URL:',url);
+        console.log('Query:',content);
 
-    webSocketCommands(cammand) {
-        switch (cammand) {
-            case '_MedicTouch':
-                return {
-                    msg: 'Start execution Bot [' + cammand + ']',
-                    path: c.PATH_BOT(cammand),
-                    opt: {}
-                };
-            case '_Optum' :
-                return {
-                    msg: 'Start execution Bot [' + cammand + ']',
-                    path: c.PATH_BOT(cammand),
-                    opt: {}
-                };
-            case '_PaySpan' :
-                return {
-                    msg: 'Start execution Bot [' + cammand + ']',
-                    path: c.PATH_BOT(cammand),
-                    opt: {maxInstances: 1}
-                };
-            case '_PaySpan credentials audit' :
-                botServer.multiInstaces();
-                let msg = cammand.split(' ');
-                return {
-                    opt: {maxInstances: 1},
-                    act: {action: msg[1] + '.' + msg[2]},
-                    path: c.PATH_BOT(msg[0]),
-                    actPath: 'bots/' + msg[0] + '/.temp/action.json',
-                    msg: 'Start execution Bot [' + cammand + ']'
-                };
-            default:
-                return {
-                    msg: '[' + cammand + '] sorry, it is not a valid command'
-                }
-        }
+        return JSON.parse(requestSync('POST', url, content).getBody());
     };
 
     serverRequestSync(method, url, data) {
@@ -81,6 +52,22 @@ class Main {
         });
         return JSON.parse(responseServer.getBody('utf8'));
     }
+
+    async  _APIRead(collection, data){
+        try {
+            //console.log(data);
+            let models = require(`../models/${collection}`);
+            return await models.find(data).exec();
+
+        }
+        catch (e) {
+            console.error('ERROR: ', e);
+            return 'ERROR: ' + e;
+        }
+    }
+
+
+
 }
 
 module.exports = Main;

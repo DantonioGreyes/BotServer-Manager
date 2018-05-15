@@ -23,14 +23,21 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "mongoose": "^5.0.16",
+    "node-watch": "^0.5.8",
     "semver": "^5.5.0"
   },
   "devDependencies": {
     "body-parser": "^1.18.2",
+    "events": "^2.0.0",
+    "find-process": "^1.1.1",
     "http": "0.0.0",
     "nodemon": "^1.0.20",
     "request": "^2.85.0",
     "socket.io": "^2.1.0",
-    "sync-request": "^6.0.0"
+    "sync-request": "^6.0.0",
+    "wdio-mocha-framework": "^0.5.13",
+    "wdio-selenium-standalone-service": "0.0.10",
+    "wdio-spec-reporter": "^0.1.4",
+    "webdriverio": "^4.12.0"
   }
 }

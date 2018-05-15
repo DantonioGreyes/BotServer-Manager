@@ -21,7 +21,8 @@ const
     utils = require('./core/class.utils.server'),
     Ws = require('ws').Server,
     fs = require('fs'),
-    c = require('./core/constants.server');
+    c = require('./core/constants.server'),
+    watch = require('node-watch');
 
 let
     router = express.Router(),
@@ -31,27 +32,41 @@ let
 
 database.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+
+
 wss.on('connection', function (ws, req) {
+    util.clearTemp(c.PATH_TEMP);
+
+    let watcher = watch(c.PATH_TEMP, {recursive: true});
+
+    watcher.on('change', function (event, filename) {
+        ws.send(util.readFile(c.PATH_TEMP));
+    });
+
     let dataConnection = util.getDataToConnection(req);
     util.logConnection(dataConnection);
-    ws.send('ServerBot - Manager | CONNECTED! - ' + dataConnection.id_connection);
+
 
     ws.on('message', function (messages) {
         util.log(messages);
         let parameters = util.webSocketCommands(messages);
         util.log(JSON.stringify(parameters));
-        ws.send(JSON.stringify(parameters));
+        //ws.send(JSON.stringify(parameters));
+        //ws.send(JSON.stringify(result));
     });
 
     ws.on('close', function close() {
         console.log('disconnected');
+        watcher.close();
+        ws.terminate();
     });
 
     ws.on('error', function close() {
         console.log('disconnected by Error!');
+        watcher.close();
+        ws.terminate();
     })
 });
-
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -104,9 +119,11 @@ router.route('/create/:models')
 
 router.route('/read/:models')
     .post(function (req, res) {
+        console.log('entro en Read/models')
         try {
             let models = require(`./models/${req.params.models}`);
             let query = req.body;
+            console.log(query);
             models.find(query, (err, response) => {
                 if (err) throw err;
                 res.json(response);
@@ -141,14 +158,14 @@ router.route('/authenticated/:models')
         });
     });
 
-router.route('/bears2')
-    .get(function (req, res) {
-        Bear.find(function (err, bears) {
-            if (err)
-                res.send(err);
-
-            res.json(bears);
-        });
+router.route('/credentials')
+    .post(async function (req, res) {
+        //console.log('query:', req.body);
+        //let result =
+        const consult = await util._APIRead('credentials', req.body);
+        console.log(consult);
+        res.send(JSON.stringify(consult));
+        //result.then(response => res.send(response));
     });
 
 router.route('/users/:name')
@@ -161,6 +178,7 @@ router.route('/users/:name')
             res.json({message: 'Bear created!'});
         });
     });
+
 
 router.get('/', function (req, res) {
     res.json({message: 'hooray! welcome to our api!'});
@@ -179,26 +197,27 @@ app.get('/home',(req,res)=>{
 
 app.get('/home', (req, res) => {
     let resultToken = req.headers.cookie ? util.getCookiesToken(req.headers.cookie) : false;
-
-
-    if(resultToken){
+    if (resultToken) {
         res.sendFile(__dirname + '/public/dashboard.html');
     }
-
     (!req.query.code && !resultToken) && res.redirect('/');
 
-    if(!resultToken && req.query.code){
+    if (!resultToken && req.query.code) {
         let code = req.query.code;
         let user = util.getUserWithGithub(code);
+
+        if (user === undefined) res.send(user);
+
         if (Object.keys(user).length > 0) {
             res.sendFile(__dirname + '/public/dashboard.html');
-            res.cookie('token', user.token, {maxAge: 900000, httpOnly: true})
+            res.cookie('token', user.token, {maxAge: 9999999, httpOnly: true})
         }
     }
 });
 
 app.get('/.tmp', (req, res) => {
     let token = req.headers.cookie ? util.getCookiesToken(req.headers.cookie) : res.redirect('/');
-    let response = fs.readFileSync('.tmp/'+token+'.json', 'utf8');
+    let response = fs.readFileSync('.tmp/' + token + '.json', 'utf8');
     res.send(response)
 });
+

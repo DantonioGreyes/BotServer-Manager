@@ -19,7 +19,19 @@ if (window.location.href !== 'http://localhost:8080/') {
         }
     });
 }
-
+/*
+var w;
+    if(typeof(Worker) !== "undefined") {
+        if(typeof(w) == "undefined") {
+            w = new Worker("workers.js");
+        }
+        w.onmessage = function(event) {
+            document.getElementById("result").innerHTML = event.data;
+        };
+    } else {
+        document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+    }
+*/
 // Create WebSocket connection.
 const socket = new WebSocket('ws://localhost:40210');
 
@@ -32,32 +44,43 @@ socket.addEventListener('open', function (event) {
 });
 
 // Listen for messages
+let data;
 socket.addEventListener('message', function (event) {
-    $("#bodyResponse").val(event.data);
-});
+    console.log(event.data);
 
+
+
+
+    let data = event.data.split('|');
+    let status;
+    switch (data[1]){
+        case ' S ' :
+            console.log('Success');
+            status = '<i  style="color:green" class="fas  fa-check fa-1x"></i>';
+            break;
+        case ' E ':
+            console.log('Error');
+            status = '<i  style="color:orange" class="fas fa-exclamation-triangle"></i>';
+            break;
+        case ' W ':
+            console.log('Warning');
+            status = '<i  style="color:orange" class="fas fa-exclamation-triangle"></i>';
+            break;
+        case ' I ':
+            console.log('Info');
+            status = '<i  style="color:deepskyblue" class="fas fa-info-circle fa-1x"></i>';
+            break
+
+    }
+
+    $('#logResult tbody').prepend('<tr class="success"><td class="small">' + data[0] + '</td><td align="center" class="small">' + status + '</td><td class="small"><small>' + data[2] + '</small></td></tr>');
+
+});
 $('#send').on("click", function () {
     socket.send($('#commands').val());
 });
 
-let parameters = "{\n" +
-    "  \"login\": \"PRM7100\",\n" +
-    "  \"password\": \"L@nd1326\",\n" +
-    "  \"botName\": \"Medicare_spot\",\n" +
-    "  \"parameters\": [\n" +
-    "    {\n" +
-    "      \"practiceName\": \"CFBack\",\n" +
-    "      \"memberId\": \"514423000A\",\n" +
-    "      \"dos\": \"11\/16\/2017\"\n" +
-    "    },\n" +
-    "    {\n" +
-    "      \"practiceName\": \"CFBack\",\n" +
-    "      \"memberId\": \"475480940A\",\n" +
-    "      \"dos\": \"01\/18\/2018\"\n" +
-    "    }\n" +
-    "  ]\n" +
-    "}";
-
+let parameters = "";
 $(document).ready(function () {
 
     $("#urlbase").keyup(function () {
