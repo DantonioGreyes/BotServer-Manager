@@ -2,7 +2,8 @@
 let HOST = 'localhost';
 let HTTP_PORT = 8080;
 module.exports = Object.freeze({
-    MONGODB_URL_CONNECTION: 'mongodb://testdb:j9jjk8k9@ds113648.mlab.com:13648/testingdb',
+    MONGODB_URL_CONNECTION_MLAB: 'mongodb://testdb:j9jjk8k9@ds113648.mlab.com:13648/testingdb',
+    MONGODB_URL_CONNECTION_LOCALHOST: 'mongodb://localhost:27017',
     PORT_SERVER : process.env.PORT || HTTP_PORT,
     WS_PORT : 40210,
     APP_NAME : 'BotServer Manager (V.2.0)',
@@ -18,7 +19,9 @@ module.exports = Object.freeze({
     GITHUB_CLIENT_SECRET : '809985ce5bd614b92d6f0af761ccc97803b5862c',
     GITHUB_URL_ACCESS: 'https://github.com/login/oauth/access_token',
     GITHUB_URL_USER: 'https://api.github.com/user',
-    HELP_COMMANDS_DETAILS : '' +
+    IMAP_CREDENTIALS : {imap:{user:'bot.payspan@prmbilling.net',password:'Passw0rd',host:'mailserver.wacperu.com',port:993,tls:true}},
+    IMAP_SEARCH_CRITERIAL:date=>{ return ['UNSEEN', ['SINCE',date], ['FROM', 'fgonzales@PRMbilling.net']] },
+    IMAP_FETCH_OPTION:{bodies: ['HEADER', 'TEXT'],markSeen: true},    HELP_COMMANDS_DETAILS : '' +
 'execute payspan\n' +
     'execute payspan multiple\n' +
     'execute payspan auditor\n' +

@@ -63,3 +63,4 @@ typings/
 .next
 #WebStorm
 .idea
+!/node_modules/

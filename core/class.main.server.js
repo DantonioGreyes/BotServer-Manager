@@ -1,7 +1,7 @@
 const request = require('request');
 const requestSync = require('sync-request');
 const c = require('./constants.server');
-Launcher = require('webdriverio').Launcher;
+const Launcher = require('webdriverio').Launcher;
 
 class Main {
 
@@ -65,7 +65,6 @@ class Main {
             return 'ERROR: ' + e;
         }
     }
-
 
 
 }

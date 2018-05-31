@@ -1,12 +1,13 @@
 const
     fs = require('fs'),
     c = require('./constants.server'),
-    main = require('./class.main.server');
+    main = require('./class.main.server'),
+   imaps = require('imap-simple');
 
-let code;
-let userData;
-let logTmp = [];
-let globalLog = {};
+let
+    code,
+    userData,
+    globalLog = {};
 
 class Utils extends main {
     getDataToConnection(request) {
@@ -21,56 +22,39 @@ class Utils extends main {
 
 
     log(msg, status = 'I') {
+        //status :
+        // [S]uccess
+        // [E]rror
+        // [W]arning
+        // [I]nfo
 
-
-
-        //status : Success | Error | Warning | Info
-        console.log('log > status:', status);
         let options = {
             message: this.customDate('h:m:i') + ' | ' + status + ' | ' + msg,
             files: ['logs/log_' + this.customDate('yyyy-mm-dd') + '.log', c.PATH_TEMP]
         };
 
-        //logTmp.push();
-        /*  globalLog[]['status']= status;
-          globalLog[]['message']= msg;*/
-        if (!fs.existsSync(options.files[0])) {
-            fs.writeFileSync(options.files[0], options.message)
-        } else {
-            //options.files.forEach(file => fs.appendFileSync(file, options.message + '\n'));
-            fs.writeFileSync(options.files[0], options.message);
-        }
+        !fs.existsSync(options.files[0])
+            ? fs.writeFileSync(options.files[0], options.message)
+            : fs.appendFileSync(options.files[0], options.message);
 
+        //fs.writeFile(options.files[1], options.message, function(err) {
+        //   if(err)
+                fs.writeFileSync(options.files[1], options.message);
+        //});
 
-        fs.writeFileSync(options.files[1], options.message);
         console.info('\x1b[36m', options.message, '\x1b[0m');
-        /*let O = `{'date':"${this.customDate('h:m:i')}",'status':"${status}", 'message': '${msg}'}`;
-
-        var stats = fs.statSync(options.files[1]);
-        var fsSize = stats["size"];
-
-        fs.appendFileSync(options.files[1],fsSize > 0 ? '~'+O : O);
-        console.info('\x1b[36m', options.message, '\x1b[0m');*/
-
-        //globalLog['message'] = options.message;
-        //return super._dbCreate('logs', globalLog);
     }
 
     logConnection(data) {
-        console.info('\x1b[34m', data, '\x1b[0m');
-
         let msg = JSON.stringify({'ip': data.ip, 'id': data.id_connection, 'status': 'CONNECTED!', 'Date': data.date});
-
-
-/*        let msg = '\n' +
-            '| IP: ' + data.ip + ' \n' +
-            '| ID connection: [' + data.id_connection + '] \n' +
-            '| status:  CONNECTED! \n' +
-            '| Date:' + data.date;*/
-        //globalLog['message'] = msg;
         this.log(msg);
     }
 
+    /**
+     * customDate()
+     * @param arrgs(format, date, addDay, typeReturn)
+     * @returns {any}
+     */
     customDate(...arrgs) {
         let format = arrgs[0] || "mm/dd/yyyy";
         let date = arrgs[1] ? new Date(arrgs[1] + " 12:00:00") : new Date();
@@ -108,6 +92,7 @@ class Utils extends main {
                     return str;
             }
         });
+        result = result.replace(/~/g, '');
         return optReturn ? new Date(result + " 12:00:00") : result;
     }
 
@@ -134,27 +119,31 @@ class Utils extends main {
     }
 
     webSocketCommands(sCommands) {
-        console.log('>>>>>>>',sCommands);
+        this.log('webSocketCommands ['+sCommands+']');
         let commands = sCommands.split(' ');
         try {
             switch (commands[0]) {
                 case 'execute':
-                    let getParam = this.getParamatersBots(commands[1] + ' ' + (commands[2] || ''));
+                    let getParam = this.getParamatersBots(commands[1] + '_' + (commands[2] || '') + (commands[3] || '--S'));
                     if (!getParam) {
-                        this.log('error en el comando');
+                        this.log('error in the command ['+commands[1]+'] or ['+commands[2]+'] ', 'E');
                         return;
                     }
-                    this.getCredentials(commands[1], getParam.act);
-                    let executionBot = super.executeBots(getParam.path, getParam.opt);
-                    this.log(getParam.msg);
-                    return executionBot;
+                    if(!this.getCredentials(commands[1], getParam.act)) return;
 
+                    super.executeBots(getParam.path, getParam.opt);
+                    this.log(getParam.msg);
+
+                    return 'Please wait executionBot in progress...';
                 case 'getFile':
                     break;
                 case 'credentials':
                     break;
                 case 'help':
                     return c.HELP_COMMANDS;
+                case 'kill_process':
+                      process.exit(1);
+                    return false;
                 default :
                     return '[' + sCommands + '] sorry, it is not a valid command';
             }
@@ -164,7 +153,7 @@ class Utils extends main {
     }
 
     getParamatersBots(botname) {
-        this.log('getParamatersBots [' + botname + ']');
+        this.log('getParamatersBots ['+botname+']');
         switch (botname) {
             case 'medictouch ':
                 return {
@@ -203,31 +192,25 @@ class Utils extends main {
                     path: c.PATH_BOT(command),
                     opt: {maxInstances: 1}
                 };
-            case 'payspan ' :
-                return {
-                    msg: 'Start execution Bot [' + command + ']',
-                    path: c.PATH_BOT(command),
-                    opt: {maxInstances: 1}
-                };
-            case 'payspan multiple' :
+            case 'payspan_download--M' :
                 return {
                     msg: 'Start execution Bot [' + botname + ']',
-                    path: c.PATH_BOT('_' + botname.split(' ')[0].toUpperCase()),
+                    path: c.PATH_BOT('_' + botname.split('_')[0].toUpperCase()),
                     opt: {maxInstances: 10},
                     act: ['multiple', 'template_01.js']
                 };
-            case 'payspan auditor' :
+            case 'payspan_download--S' :
                 return {
                     msg: 'Start execution Bot [' + botname + ']',
-                    path: c.PATH_BOT('_' + botname.split(' ')[0].toUpperCase()),
-                    opt: {maxInstances: 10},
-                    act: ['multiple', 'template_02.js']
+                    path: c.PATH_BOT('_' + botname.split('_')[0].toUpperCase()),
+                    opt: {maxInstances: 1},
+                    act: ['multiple', 'template_01.js']
                 };
-            case 'payspan validator' :
+            case 'payspan_validate--S' :
                 return {
                     msg: 'Start execution Bot [' + botname + ']',
-                    path: c.PATH_BOT('_' + botname.split(' ')[0].toUpperCase()),
-                    opt: {maxInstances: 10},
+                    path: c.PATH_BOT('_' + botname.split('_')[0].toUpperCase()),
+                    opt: {maxInstances: 1},
                     act: ['multiple', 'template_03.js']
                 };
             default:
@@ -249,35 +232,67 @@ class Utils extends main {
         }
     }
 
+    imapGetCodeActivate() {
+        let searchCritera = c.IMAP_SEARCH_CRITERIAL(this.customDate(null, null, -1, true));
+        let fetchOption = c.IMAP_FETCH_OPTION;
+        let config = c.IMAP_CREDENTIALS;
+
+        return imaps
+            .connect(config)
+            .then(connection => connection
+                .openBox('INBOX')
+                .then(() => connection
+                    .search(searchCritera, fetchOption)
+                    .then(results => results
+                        .map(res => res.parts
+                            .filter(part => part.which === 'TEXT')[0]
+                            .body
+                            .replace(/\r\n/g, '~')
+                            .split('~')
+                            .filter(response => response !== '')[7]
+                            .replace('Your authentication code is ', '')))));
+    }
+
     async getCredentials(botname, objOption) {
-        console.log(objOption[0]);
-        //ToDo - debe enviar botName convertido, (template o Script_0x)
         try {
             let dirFile = __dirname + '/../services/_' + botname.toUpperCase() + '/.tmp/botTemp.';
+            let infoFile = __dirname + '/../services/_' + botname.toUpperCase() + '/data/';
             const groupBy = (xs, key) => {
                 return xs.reduce(function (rv, x) {
                     (rv[x[key]] = rv[x[key]] || []).push(x);
                     return rv;
                 }, {});
             };
+
             const credentials = await this._APIRead('credentials', {'botname': botname});
 
-            if (objOption[0] === 'multiple') {
-                let CredentialsMultiResult = JSON.parse(JSON.stringify(groupBy(credentials[0].credentials, 'client_id')));
-                for (let i = 0; i < Object.keys(CredentialsMultiResult).length; i++) {
-                    //console.log('----------------------------------------' + Object.keys(CredentialsMultiResult)[i]);
-                    let credentials = JSON.stringify((CredentialsMultiResult)[Object.keys(CredentialsMultiResult)[i]]);
-                    fs.writeFileSync(dirFile + i + '.js', 'let data = ' + credentials + '; \n ' + fs.readFileSync(__dirname + '/../services/_' + botname.toUpperCase() + '/' + objOption[1], 'utf8'));
-                }
-                this.log('---cloned completed!')
+            fs.writeFileSync(infoFile + 'access.json',JSON.stringify(credentials), 'utf8');
 
+
+            if (objOption[0] === 'multiple') {
+                let template = fs.readFileSync(__dirname + '/../services/_' + botname.toUpperCase() + '/' + objOption[1], 'utf8');
+                let CredentialsMultiResult = JSON.parse(JSON.stringify(groupBy(credentials[0].credentials, 'client_id')));
+                let client_id = Object.keys(CredentialsMultiResult).length;
+                let acounts = credentials[0].credentials.length;
+                for (let i = 0; i < 1/*client_id*/; i++) {
+                    let credentials = JSON.stringify((CredentialsMultiResult)[Object.keys(CredentialsMultiResult)[i]]);
+                    fs.writeFileSync(dirFile + i + '.js', 'let data = ' + credentials + '; \n ' + template);
+                }
+                this.log('--- Cloned completed!');
+                if(client_id !== fs.readdirSync(__dirname + '/../services/_' + botname.toUpperCase() + '/.tmp/').length){
+                    console.log('error: la catidad de archivos "botTemp.js" es diferente a la cantidad de clientes existente');
+                    console.log(client_id,fs.readdirSync(__dirname + '/../services/_' + botname.toUpperCase() + '/.tmp/').length);
+                    return false;
+                }else{
+                    let totalTest = template.split('it(');
+                    this.log("total Acounts : "+ acounts+' == '+acounts+'/'+(totalTest.length-1));
+                    return true;
+                }
             }
 
         } catch (e) {
             console.log(e);
         }
-
-
     }
 
     getCookiesToken(cookies) {
@@ -287,10 +302,6 @@ class Utils extends main {
                 return x.split('=')[0].trim() === 'token' ? x : void 0
             });
         return token.length !== 0 ? token[0].split('=')[1] : false;
-    }
-
-    readFile(path) {
-        return fs.readFileSync(path, 'utf8');
     }
 
     clearTemp(path) {
